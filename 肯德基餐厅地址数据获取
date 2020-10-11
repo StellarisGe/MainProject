@@ -1,0 +1,37 @@
+#这是python的代码，使用之前请下载pycharm和python编译器
+
+import requests
+import json
+# 指定url
+url = 'http://www.kfc.com.cn/kfccda/ashx/GetStoreList.ashx?op=keyword'
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                  'Chrome/85.0.4183.102 Safari/537.36 Edg/85.0.564.51 '
+}
+address = 1
+
+while 1:
+    address = input('请输入餐厅所在城市或县,区级搜城市即可!')
+    pageNum = 1
+    pageNumMax = input('你想要几页数据(只需回答数字,推荐1-2)')
+
+    while pageNum <= int(pageNumMax):
+        data = {
+            'cname': '',
+            'pid': '',
+            'keyword': address,
+            'pageIndex': pageNum,
+            'pageSize': '10'
+        }
+        # 发起请求
+        response = requests.post(url=url, data=data, headers=headers).text
+        # 获取响应数据
+        address_data = json.loads(response)
+        outcome = address_data['Table1']
+        for item in outcome:
+            Address = item['addressDetail']
+            Addition = item['pro']
+            ProvinceName = item['provinceName']
+            CityName = item['cityName']
+            print(ProvinceName, '   ', CityName, '   ', Address, '   ', Addition)
+        pageNum += 1
